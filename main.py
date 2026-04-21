@@ -26,7 +26,7 @@ def build_plant_data():
     plant_data = {'generator_order': [], 'generators': {}}
     for generator_key in cfg['generators']:
         plant_data['generator_order'].append(generator_key)
-        plant_data['generators'][generator_key] = {'local': cfg['generators'][generator_key]['local'],'l1_volt': 0, 'l2_volt': 0, 'l1_amp': 0, 'rpm': 0, 'startup': False}
+        plant_data['generators'][generator_key] = {'local': cfg['generators'][generator_key]['local'],'l1_volt': 0, 'l2_volt': 0, 'l1_amp': 0, 'l2_amp': 0, 'rpm': 0, 'startup': False}
 
     print(plant_data)
 
