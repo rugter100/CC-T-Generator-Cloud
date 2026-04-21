@@ -1,0 +1,17 @@
+devmode: True
+
+max_rpm: 256
+
+webserver:
+  bind_address: '0.0.0.0'
+  bind_port: 2061
+
+
+
+generators:
+  loc:
+    local: True
+  1:
+    local: False
+  2:
+    local: False
