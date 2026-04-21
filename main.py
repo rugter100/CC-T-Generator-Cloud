@@ -28,7 +28,6 @@ def build_plant_data():
         plant_data['generator_order'].append(generator_key)
         plant_data['generators'][generator_key] = {'local': cfg['generators'][generator_key]['local'],'l1_volt': 0, 'l2_volt': 0, 'l1_amp': 0, 'l2_amp': 0, 'rpm': 0, 'startup': False}
 
-    print(plant_data)
 
 build_plant_data()
 
@@ -56,17 +55,21 @@ def getdata():
         return jsonify(plant_data)
 
 def check_load():
+    log.info("Checking load on the network.")
     generators_on = 0
     generators_maxed = 0
     for generator in plant_data['generators'].items():
-        if not generator['local']:
-            generators_on += 1
-            if generator['rpm'] == cfg['max_rpm']:
-                generators_maxed += 1
+        if generator[1]['startup']:
+            if not generator[1]['local']:
+                generators_on += 1
+                if generator[1]['l1_amp'] == 2 and generator[1]['l2_amp'] == 2:
+                    generators_maxed += 1
+    log.info(f"Generators On: {generators_on} | Generators at 2A Load: {generators_maxed}")
     if generators_maxed == generators_on:
         for generator_key in plant_data['generators']:
             if not plant_data['generators'][generator_key]['startup']:
                 plant_data['generators'][generator_key]['startup'] = True
+                log.info(f"Turning on generator {generator_key}")
                 break
 
 
@@ -82,7 +85,7 @@ elif __name__ == "__main__":
 
     scheduler.add_job(
         func=check_load,
-        trigger=IntervalTrigger(minutes=15),
+        trigger=IntervalTrigger(minutes=5),
         id='check_load',
         name='Check Load on generators',
         replace_existing=True
